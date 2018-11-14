@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+    <link rel="shortcut icon" href="{{.__theme__}}favicon.ico">
+    <link href="{{.__theme__}}css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="{{.__theme__}}css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <!-- Morris -->
+    <link href="{{.__theme__}}css/plugins/morris/morris-0.4.3.min.css" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="{{.__theme__}}js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+
+    <link href="{{.__theme__}}css/animate.css" rel="stylesheet">
+    <link href="{{.__theme__}}css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>最新动态</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="index.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="index.html#">选项1</a>
+                                </li>
+                                <li><a href="index.html#">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <p><a class="text-info" href="#">说明</a>
+                                <br/>
+                                    1.文章 添加、修改、删除、图片上传、tag 设置 -> Ok<br/>
+
+                                </p>
+                                <small class="block text-muted"><i class="fa fa-clock-o"></i> 好多分钟前</small>
+                            </li>
+                            <li class="list-group-item">
+                                <p>更多模版样式请看 <a href="/static/Hplus-v.4.1.0/index.html" target="_blank">/static/Hplus-v.4.1.0/index.html</a>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="{{.__theme__}}js/jquery.min.js?v=2.1.4"></script>
+    <script src="{{.__theme__}}js/bootstrap.min.js?v=3.3.6"></script>
+
+
+
+    <!-- Flot -->
+    <script src="{{.__theme__}}js/plugins/flot/jquery.flot.js"></script>
+    <script src="{{.__theme__}}js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="{{.__theme__}}js/plugins/flot/jquery.flot.spline.js"></script>
+    <script src="{{.__theme__}}js/plugins/flot/jquery.flot.resize.js"></script>
+    <script src="{{.__theme__}}js/plugins/flot/jquery.flot.pie.js"></script>
+
+    <!-- Peity -->
+    <script src="{{.__theme__}}js/plugins/peity/jquery.peity.min.js"></script>
+    <script src="{{.__theme__}}js/demo/peity-demo.js"></script>
+
+    <!-- 自定义js -->
+    <script src="{{.__theme__}}js/content.js?v=1.0.0"></script>
+
+
+    <!-- jQuery UI -->
+    <script src="{{.__theme__}}js/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- GITTER -->
+    <script src="{{.__theme__}}js/plugins/gritter/jquery.gritter.min.js"></script>
+
+    <!-- EayPIE -->
+    <script src="{{.__theme__}}js/plugins/easypiechart/jquery.easypiechart.js"></script>
+
+    <!-- Sparkline -->
+    <script src="{{.__theme__}}js/plugins/sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- Sparkline demo data  -->
+    <script src="{{.__theme__}}js/demo/sparkline-demo.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            WinMove();
+            // setTimeout(function () {
+            //     $.gritter.add({
+            //         title: '您有2条未读信息',
+            //         text: '请前往<a href="mailbox.html" class="text-warning">收件箱</a>查看今日任务',
+            //         time: 10000
+            //     });
+            // }, 2000);
+
+
+            $('.chart').easyPieChart({
+                barColor: '#f8ac59',
+                //                scaleColor: false,
+                scaleLength: 5,
+                lineWidth: 4,
+                size: 80
+            });
+
+            $('.chart2').easyPieChart({
+                barColor: '#1c84c6',
+                //                scaleColor: false,
+                scaleLength: 5,
+                lineWidth: 4,
+                size: 80
+            });
+
+            var data1 = [
+                [0, 4], [1, 8], [2, 5], [3, 10], [4, 4], [5, 16], [6, 5], [7, 11], [8, 6], [9, 11], [10, 30], [11, 10], [12, 13], [13, 4], [14, 3], [15, 3], [16, 6]
+            ];
+            var data2 = [
+                [0, 1], [1, 0], [2, 2], [3, 0], [4, 1], [5, 3], [6, 1], [7, 5], [8, 2], [9, 3], [10, 2], [11, 1], [12, 0], [13, 2], [14, 8], [15, 0], [16, 0]
+            ];
+            $("#flot-dashboard-chart").length && $.plot($("#flot-dashboard-chart"), [
+                data1, data2
+            ], {
+                series: {
+                    lines: {
+                        show: false,
+                        fill: true
+                    },
+                    splines: {
+                        show: true,
+                        tension: 0.4,
+                        lineWidth: 1,
+                        fill: 0.4
+                    },
+                    points: {
+                        radius: 0,
+                        show: true
+                    },
+                    shadowSize: 2
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true,
+                    tickColor: "#d5d5d5",
+                    borderWidth: 1,
+                    color: '#d5d5d5'
+                },
+                colors: ["#1ab394", "#464f88"],
+                xaxis: {},
+                yaxis: {
+                    ticks: 4
+                },
+                tooltip: false
+            });
+        });
+    </script>
+
+
+    <!--统计代码，可删除-->
+
+</body>
+
+</html>

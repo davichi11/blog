@@ -1,0 +1,299 @@
+<link href="{{.__static__}}plugin/editor.md/css/editormd.css" rel="stylesheet" />
+    <!-- simditor -->
+    <script src="{{.__static__}}plugin/editor.md/editormd.min.js"></script>
+
+    <link href="{{.__theme__}}css/plugins/switchery/switchery.css" rel="stylesheet">
+    <script src="{{.__theme__}}js/plugins/switchery/switchery.js"></script>
+    <!-- iCheck -->
+<link href="{{.__theme__}}css/plugins/iCheck/custom.css" rel="stylesheet">
+    <script src="{{.__theme__}}js/plugins/iCheck/icheck.min.js"></script>
+
+    <!-- 日期时间 -->
+    <script src="{{.__theme__}}js/plugins/layer/laydate/laydate.js"></script>
+    <!-- Tags -->
+    <script src="{{.__static__}}plugin/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+    <link href="{{.__static__}}plugin/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" rel="stylesheet">
+<style>
+    .bootstrap-tagsinput{width:100%}
+</style>
+<script src="{{.__static__}}plugin/insertAtCaret.js"></script>
+    <script>
+        var blog_id="{{if .is_put}}{{.info.Blog.BlogId}}{{else}}0{{end}}";
+        var TOKEN='{{.upload_token}}';
+        var layerID;
+        var UPLOAD_INPUT_ID='';
+        //禁止 回车 表单保存
+//        document.getElementsByTagName('form')[0].onkeydown = function(e){
+//            var e = e || event;
+//            var keyNum = e.which || e.keyCode;
+//            return keyNum==13 ? false : true;
+//        };
+        var MarkDown = editormd("content_div", {
+//            width: "90%",
+            height: 640,
+            markdown : "",
+            path : '{{.__static__}}plugin/editor.md/lib/',
+            emoji : true,
+            taskList : true,
+            htmlDecode : "style,script,iframe|on*",
+            tocm            : true,         // Using [TOCM]
+            //dialogLockScreen : false,   // 设置弹出层对话框不锁屏，全局通用，默认为 true
+            //dialogShowMask : false,     // 设置弹出层对话框显示透明遮罩层，全局通用，默认为 true
+            //dialogDraggable : false,    // 设置弹出层对话框不可拖动，全局通用，默认为 true
+            //dialogMaskOpacity : 0.4,    // 设置透明遮罩层的透明度，全局通用，默认值为 0.1
+            //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为 #fff
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/admin/upload/image?t=markdown&token="+encodeURIComponent(TOKEN),
+            /*
+             上传的后台只需要返回一个 JSON 数据，结构如下：
+             {
+             success : 0 | 1,           // 0 表示上传失败，1 表示上传成功
+             message : "提示的信息，上传成功或上传失败及错误信息等。",
+             url     : "图片地址"        // 上传成功时才返回
+             }
+             */
+            onchange : function() {
+                console.log("markdown:数据变动");
+                $('#thatForm').data("changed",true);
+            }
+        });
+
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+            //保存发布
+            $('.saveRelease').click(function () {
+                $(".c_status input[value='99']").iCheck('check');
+                $('#thatForm').submit();
+            });
+            //保存
+            $('.save').click(function () {
+                $(".c_status input[value='0']").iCheck('check');
+                $('#thatForm').submit();
+            });
+            //保存
+            $('#thatForm').submit(function (e) {
+                e.preventDefault();
+                //提交前判断
+                if ($("#thatForm").data("changed")!=true) {
+                    layer.alert("没有修改过任何数据",{ icon:1});
+                    return false;
+                }
+                var btn=$('.btn');
+                btn.attr('disabled',true);
+                var $this=$(this);
+                $this.serialize();
+                //加载层
+                var loading = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
+                $.ajax({
+                    url:$this.attr('action'),
+                    data:$this.serialize(),
+                    dataType:'json',
+                    method:"{{._method}}"
+                }).done(function (data) {
+                    layer.close(loading);
+                    console.log(data)
+                    if(data.code==1){
+                        layer.alert(data.info,{ icon:1});
+                        setTimeout(function () {
+                            window.location.reload()
+                        },3000)
+                    }else{
+                        layer.alert(data.info,{ icon:2});
+                        btn.attr('disabled',false);
+                    }
+                }).fail(function(){ alert("系统错误"); });
+                return false;
+            });
+            //标签
+            $('.bootstrap-tagsinput > input').on('change', function (event) {
+                $(this).css('width','200px');
+                var $element = $(event.target),
+                    $container = $element.closest('.bootstrap-tagsinput');
+
+                if (!$element.data('tagsinput'))
+                    return;
+
+                var val = $element.val();
+                if (val === null)
+                    val = "null";
+                str=($.isArray(val) ? JSON.stringify(val) : val.replace('"', '\\"'));
+                $("#tag").val(str);
+            }).trigger('change');
+            //检测是否存在
+            $('button.check_title').click(function () {
+                var $this=$(this),$name=$('#title');
+                if($name.val()==""||$name.val()==null){
+                    var t=layer.tips('标题不能为空', $name);
+                    setTimeout(function () {
+                        layer.close(t);
+                    },2000)
+                    return false;
+                }
+                var data={"title":$name.value(),"cat_id":0,"id":blog_id};
+                {{if .is_put}}
+                data.id="{{.info.Blog.BlogId}}";
+                {{end}}
+                $.ajax({
+                    url:'/admin/blog/check_title',
+                    data:data,
+                    dataType:'json',
+                    method:"post"
+                }).done(function (data) {
+                    console.log(data);
+                    $this.removeClass("btn-default")
+                    if(data.code==1){
+                        $this.removeClass("btn-danger");
+                        $this.addClass("btn-primary");
+                        layer.tips('检测通过', $name);
+                    }else{
+                        layer.tips('检测失败，有重复', $name);
+                        $this.removeClass("btn-primary");
+                        $this.addClass("btn-danger");
+                    }
+                }).fail(function(){
+                    alert("系统错误");
+                });
+            });
+            //图片上传
+            $('button.upload_image').click(function () {
+                UPLOAD_INPUT_ID=$(this).data('name');
+                //iframe层
+                layerID=layer.open({
+                    type: 2,
+                    title: '图片上传',
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['680px', '400px'],
+                    content: '/admin/upload/image?opt='+encodeURIComponent(TOKEN) //iframe的url
+                });
+            });
+            //摘要截取
+            $('button.descriptionCut').click(function () {
+                var str=MarkDown.getPreviewedHTML();
+                if(str){
+                    $('#description').value(str.replace(/<[^>]+>/g,""));
+                }
+            });
+            //原创转载
+            $('.c_type_id .i-checks').on('ifClicked',function (e) {
+                if($(this).val()=='10005'){
+                    $('ul.nav-tabs li:eq(2) a').tab('show');
+                }
+            });
+            //有动作
+            $('.i-checks').on('ifClicked',function (e) {
+                $('#thatForm').data("changed",true);
+            });
+            //同步获取博客ID内容
+            $('a.get').click(function (e) {
+                //提交前判断
+                if ($("#thatForm").data("changed")) {
+                    layer.alert("数据变动过，请先保存数据后再操作",{ icon:1});
+                    return false;
+                }
+                var $this=$('#sync_');
+                var id=$this.val();
+                var tp_id =10011;
+                var data={"blog_id":blog_id,"type_id":tp_id,"id":id};
+                $.ajax({
+                    url:'/admin/blog_sync/go',
+                    data:data,
+                    dataType:'json',
+                    method:"get"
+                }).done(function (data) {
+                    console.log(data);
+                    $this.removeClass("btn-default");
+                    if(data.code==1){
+                        layer.tips('成功',$this);
+                        MarkDown.setMarkdown(data.content);
+                        $('#tag').tagsinput('removeAll');
+                        $('#tag').tagsinput('add',data.tag);
+                        $('#tag').tagsinput('refresh');
+                        $('#title').val(data.title);
+                        $('#description').val(data.description);
+                    }else{
+                        layer.tips('失败:'+data.info,$this);
+                    }
+                }).fail(function(){
+                    alert("系统错误");
+                });
+            });
+            //创建博客ID
+            $('a.create').click(function (e) {
+                //提交前判断
+                if ($("#thatForm").data("changed")) {
+                    layer.alert("数据变动过，请先保存数据后再操作",{ icon:1});
+                    return false;
+                }
+                var $this=$('#sync_');
+                var id=$this.val();
+                var tp_id =10011;
+                var data={"blog_id":blog_id,"type_id":tp_id,"id":id};
+                $.ajax({
+                    url:'/admin/blog_sync/go',
+                    data:data,
+                    dataType:'json',
+                    method:"post"
+                }).done(function (data) {
+                    console.log(data);
+                    $this.removeClass("btn-default");
+                    if(data.code==1){
+                        var c=data.data;
+                        layer.tips('成功',$this);
+                    }else{
+                        layer.tips('失败:'+data.info,$this);
+                    }
+                }).fail(function(){
+                    alert("系统错误");
+                });
+            });
+            //更新博客ID
+            $('a.update').click(function (e) {
+                //提交前判断
+                if ($("#thatForm").data("changed")) {
+                    layer.alert("数据变动过，请先保存数据后再操作",{ icon:1});
+                    return false;
+                }
+                var $this=$('#sync_');
+                var id=$this.val();
+                var tp_id =10011;
+                var data={"blog_id":blog_id,"type_id":tp_id,"id":id};
+                $.ajax({
+                    url:'/admin/blog_sync/go',
+                    data:data,
+                    dataType:'json',
+                    method:"Put"
+                }).done(function (data) {
+                    console.log(data);
+                    $this.removeClass("btn-default");
+                    if(data.code==1){
+                        layer.tips('成功',$this);
+                    }else{
+                        layer.tips('失败:'+data.info,$this);
+                    }
+                }).fail(function(){
+                    alert("系统错误");
+                });
+            });
+            //表单数据是否变化
+            $("input, textarea, select").change(function () {
+                if($(this).attr('name')!='id'){
+                    $('#thatForm').data("changed",true);
+                }
+            });
+        });
+        //图片插入到编辑器中
+        function uploadImage(row) {
+//            $("#content").insertAtCaret('![输入图片说明]('+row.url+' "在这里输入图片标题")');
+            //$("#content").insertAtCaret('!['+row.name_original+']('+row.url+')');
+            if (UPLOAD_INPUT_ID=='thumb'){
+                $('#'+UPLOAD_INPUT_ID).val(row.url);
+            }
+            return true;
+        }
+    </script>
