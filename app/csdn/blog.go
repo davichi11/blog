@@ -23,7 +23,7 @@ func NewCsdnBlogApp() *Blog {
 }
 
 //更新
-func (t *Blog) Update(b *mod.Blog, type_id int, id int) error {
+func (t *Blog) Update(b *mod.Blog, typeId int, id int) error {
 	fmt.Println("CSDN 更新文章")
 	//fmt.Println("更新内容",b.Blog)
 	if id < 1 {
@@ -63,7 +63,7 @@ func (t *Blog) Update(b *mod.Blog, type_id int, id int) error {
 	maps := make(map[string]interface{})
 	maps["blog_id"] = b.Blog.BlogId
 	maps["id"] = id
-	maps["type_id"] = type_id
+	maps["type_id"] = typeId
 	//初始化及数据库查询
 	m := model.NewBlogSyncMapping()
 	ok, err := db.Filter(maps).Get(m)
@@ -81,7 +81,7 @@ func (t *Blog) Update(b *mod.Blog, type_id int, id int) error {
 		m.Id = strconv.Itoa(id)
 		//插入
 		m.BlogId = b.Blog.BlogId
-		m.TypeId = type_id
+		m.TypeId = typeId
 		m.IsSync = 1
 		_, err := db.NewDb().Insert(m)
 		fmt.Println("保存状态", err)
@@ -90,10 +90,10 @@ func (t *Blog) Update(b *mod.Blog, type_id int, id int) error {
 }
 
 //创建
-func (t *Blog) Create(b *mod.Blog, type_id int) (string, error) {
+func (t *Blog) Create(b *mod.Blog, typeId int) (string, error) {
 	maps := make(map[string]interface{})
 	maps["blog_id"] = b.Blog.BlogId
-	maps["type_id"] = type_id
+	maps["type_id"] = typeId
 	//初始化及查询
 	m := model.NewBlogSyncMapping()
 	ok, err := db.Filter(maps).Get(m)
@@ -143,7 +143,7 @@ func (t *Blog) Create(b *mod.Blog, type_id int) (string, error) {
 		m.Id = strconv.Itoa(str.Id)
 		//插入
 		m.BlogId = b.Blog.BlogId
-		m.TypeId = type_id
+		m.TypeId = typeId
 		m.IsSync = 1
 		_, err := db.NewDb().Insert(m)
 		fmt.Println("保存状态", err)
@@ -196,7 +196,7 @@ func (t *Blog) Read(id string) (*mod.Blog, error) {
 }
 
 //根据id更新或插入记录
-func Get(type_id, id, blog_id int) (*mod.Blog, error) {
+func Get(typeId, id, blogId int) (*mod.Blog, error) {
 	//初始化
 	csdn := NewCsdnBlogApp()
 	//接口传输获取内容
@@ -205,11 +205,11 @@ func Get(type_id, id, blog_id int) (*mod.Blog, error) {
 		return nil, err
 	}
 	//保存
-	if blog_id > 0 {
+	if blogId > 0 {
 		maps := make(map[string]interface{})
-		maps["blog_id"] = blog_id
+		maps["blog_id"] = blogId
 		maps["id"] = id
-		maps["type_id"] = type_id
+		maps["type_id"] = typeId
 		m := model.NewBlogSyncMapping()
 		_, err := db.Filter(maps).Get(m)
 		if err != nil {
@@ -223,8 +223,8 @@ func Get(type_id, id, blog_id int) (*mod.Blog, error) {
 			fmt.Println("保存状态", err)
 		} else {
 			//插入
-			m.BlogId = blog_id
-			m.TypeId = type_id
+			m.BlogId = blogId
+			m.TypeId = typeId
 			m.Id = strconv.Itoa(id)
 			m.IsSync = 1
 			_, err := db.NewDb().Insert(m)
@@ -233,8 +233,8 @@ func Get(type_id, id, blog_id int) (*mod.Blog, error) {
 	} else {
 		m := model.NewBlogSyncMapping()
 		//插入
-		m.BlogId = blog_id
-		m.TypeId = type_id
+		m.BlogId = blogId
+		m.TypeId = typeId
 		m.Id = strconv.Itoa(id)
 		m.IsSync = 1
 		_, err := db.NewDb().Insert(m)
