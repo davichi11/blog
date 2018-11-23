@@ -16,7 +16,7 @@ func NewAdminAuthService() *AdminAuth {
 }
 
 //验证Session
-func (c *AdminAuth) Validate(account string) (*AdminSession) {
+func (c *AdminAuth) Validate(account string) *AdminSession {
 	//查询用户
 	var admin *AdminUser
 	admUser, err := admin.GetAdminByUserName(account)
@@ -34,7 +34,7 @@ func (c *AdminAuth) Validate(account string) (*AdminSession) {
 /**
 token 校验，判断是否登录
 */
-func (c *AdminAuth) ValidateToken(token, currentIp string) (*model.Admin) {
+func (c *AdminAuth) ValidateToken(token, currentIp string) *model.Admin {
 	//解密
 	//aes :=crypt.Aes{}
 	//Dtoken, err := aes.Decrypt(token)

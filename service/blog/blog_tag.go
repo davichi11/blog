@@ -1,29 +1,31 @@
 package blog
 
 import (
-	"fmt"
 	"blog/fox"
-	"time"
-	"strings"
 	"blog/fox/array"
-	"blog/model"
 	"blog/fox/db"
 	"blog/fox/editor"
+	"blog/model"
+	"fmt"
+	"strings"
+	"time"
 )
+
 //标签
 type BlogTag struct {
-
 }
+
 //快速初始化
 func NewBlogTagService() *BlogTag {
 	return new(BlogTag)
 }
+
 //创建
-func (c *BlogTag)Create(m *model.BlogTag) (int, error) {
+func (c *BlogTag) Create(m *model.BlogTag) (int, error) {
 
 	fmt.Println("DATA:", m)
 	if len(m.Name) < 1 {
-		return 0,fox.NewError("标题 不能为空")
+		return 0, fox.NewError("标题 不能为空")
 	}
 	//时间
 	if m.TimeAdd.IsZero() {
@@ -32,17 +34,18 @@ func (c *BlogTag)Create(m *model.BlogTag) (int, error) {
 	o := db.NewDb()
 	affected, err := o.Insert(m)
 	if err != nil {
-		return 0,fox.NewError("创建错误" + err.Error())
+		return 0, fox.NewError("创建错误" + err.Error())
 	}
 	fmt.Println("affected:", affected)
 	fmt.Println("DATA:", m)
 	fmt.Println("Id:", m.TagId)
 	return m.TagId, nil
 }
+
 //删除
-func (c *BlogTag)DeleteByName(id int, str string) (bool, error) {
+func (c *BlogTag) DeleteByName(id int, str string) (bool, error) {
 	if str == "" {
-		return false,fox.NewError("名称 不能为空")
+		return false, fox.NewError("名称 不能为空")
 	}
 	mode := model.NewBlogTag()
 	//mode.BlogId = id
@@ -55,8 +58,9 @@ func (c *BlogTag)DeleteByName(id int, str string) (bool, error) {
 	}
 	return false, nil
 }
+
 //根据名字获取数据
-func (c *BlogTag)GetBlogTagCheckName(str string) (*model.BlogTag, error) {
+func (c *BlogTag) GetBlogTagCheckName(str string) (*model.BlogTag, error) {
 	mode := model.NewBlogTag()
 	mode.Name = str
 	o := db.NewDb()
@@ -66,8 +70,9 @@ func (c *BlogTag)GetBlogTagCheckName(str string) (*model.BlogTag, error) {
 	}
 	return nil, err
 }
+
 //创建 和删除
-func (c *BlogTag)CreateFromTags(id int, tag, old string) (bool, error) {
+func (c *BlogTag) CreateFromTags(id int, tag, old string) (bool, error) {
 	fmt.Println("CreateFromTags:")
 	//if tag == "" {
 	//	return false, nil
@@ -138,8 +143,9 @@ func (c *BlogTag)CreateFromTags(id int, tag, old string) (bool, error) {
 
 	return false, nil
 }
+
 //列表
-func (c *BlogTag)GetAll(q map[string]interface{}, fields []string, orderBy string, page int, limit int) (*db.Paginator, error) {
+func (c *BlogTag) GetAll(q map[string]interface{}, fields []string, orderBy string, page int, limit int) (*db.Paginator, error) {
 
 	mode := model.NewBlogTag()
 	data, err := mode.GetAll(q, fields, orderBy, page, 20)
@@ -182,7 +188,7 @@ func (c *BlogTag)GetAll(q map[string]interface{}, fields []string, orderBy strin
 		row.BlogStatistics = &model.BlogStatistics{}
 		for _, v := range stat {
 			//fmt.Println(v)
-			if (v.BlogId == tmp.BlogId) {
+			if v.BlogId == tmp.BlogId {
 				row.Comment = v.Comment
 				row.BlogStatistics.Read = v.Read
 				row.SeoDescription = v.SeoDescription
@@ -197,11 +203,12 @@ func (c *BlogTag)GetAll(q map[string]interface{}, fields []string, orderBy strin
 
 	return data, nil
 }
+
 //根据博客ID删除数据
-func (c *BlogTag)DeleteByBlogId(id int) (int64, error) {
+func (c *BlogTag) DeleteByBlogId(id int) (int64, error) {
 	mod := model.NewBlogTag()
 	o := db.NewDb()
-	num, err := o.Where("blog_id=?",id).Delete(mod)
+	num, err := o.Where("blog_id=?", id).Delete(mod)
 	if err != nil {
 		return 0, err
 	}

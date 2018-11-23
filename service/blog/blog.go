@@ -1,18 +1,18 @@
 package blog
 
 import (
-	"fmt"
 	"blog/fox"
 	"blog/fox/datetime"
-	"time"
 	"blog/fox/db"
-	"blog/model"
-	"strings"
 	"blog/fox/editor"
 	"blog/fox/str"
+	"blog/model"
+	"blog/service/admin"
 	"blog/service/conf"
 	sitePage "blog/service/site"
-	"blog/service/admin"
+	"fmt"
+	"strings"
+	"time"
 )
 
 //博客
@@ -115,14 +115,14 @@ func (c *Blog) ReadByUrlRewrite(id string) (map[string]interface{}, error) {
 }
 
 //上一条和下一条
-func (c *Blog) PrevAndNext(id int, type_id int) (maps map[string]interface{}, err error) {
+func (c *Blog) PrevAndNext(id int, typeId int) (maps map[string]interface{}, err error) {
 	if id < 1 {
 		return nil, fox.NewError("ID 错误")
 	}
 	maps = make(map[string]interface{})
 	//查询变量
 	query := make(map[string]interface{})
-	query["type=?"] = type_id
+	query["type=?"] = typeId
 	query["is_open=?"] = 1
 	query["status=?"] = 99
 	query["blog_id<?"] = id
@@ -144,7 +144,7 @@ func (c *Blog) PrevAndNext(id int, type_id int) (maps map[string]interface{}, er
 	//下一条
 	//查询变量
 	query = make(map[string]interface{})
-	query["type=?"] = type_id
+	query["type=?"] = typeId
 	query["is_open=?"] = 1
 	query["status=?"] = 99
 	query["blog_id>?"] = id
@@ -245,9 +245,9 @@ func (c *Blog) Create(m *model.Blog, stat *model.BlogStatistics) (int, error) {
 	}
 	//页面尾部操作
 	if config["this_page_url"] == "yes" {
-		str := sitePage.GetPageTemplate(m.BlogId, m.Content)
+		content := sitePage.GetPageTemplate(m.BlogId, m.Content)
 		tmp := &model.Blog{}
-		tmp.Content = str
+		tmp.Content = content
 		num, err := o.Id(m.BlogId).Update(tmp)
 		fmt.Println("num:", num)
 		if err != nil {
@@ -424,13 +424,13 @@ func (c *Blog) GetBlogByUrlRewrite(id string) (v *model.Blog, err error) {
 }
 
 //检测标题是否重复
-func (c *Blog) CheckTitleById(cat_id int, str string, id int) (bool, error) {
+func (c *Blog) CheckTitleById(catId int, str string, id int) (bool, error) {
 	if str == "" {
 		return false, fox.NewError("名称 不能为空")
 	}
 	mode := new(model.Blog)
 	where := make(map[string]interface{})
-	where["cat_id"] = cat_id
+	where["cat_id"] = catId
 	where["title"] = str
 	if id > 0 {
 		where["blog_id!=?"] = id
@@ -481,7 +481,7 @@ func (c *Blog) GetAll(q map[string]interface{}, fields []string, orderBy string,
 		row.BlogStatistics = &model.BlogStatistics{}
 		for _, v := range stat {
 			//fmt.Println(v)
-			if (v.BlogId == tmp.BlogId) {
+			if v.BlogId == tmp.BlogId {
 				row.Comment = v.Comment
 				row.BlogStatistics.Read = v.Read
 				row.SeoDescription = v.SeoDescription

@@ -1,25 +1,28 @@
 package admin
 
 import (
-	"strings"
 	"blog/fox"
-	"fmt"
 	UtilAuth "blog/fox/auth"
-	"blog/model"
-	"blog/fox/db"
 	"blog/fox/datetime"
-	"time"
+	"blog/fox/db"
 	"blog/fox/str"
+	"blog/model"
+	"fmt"
+	"strings"
+	"time"
 )
+
 //管理员
-type AdminUser  struct {
+type AdminUser struct {
 	*model.Admin
 	*model.AdminStatus
 }
+
 //快速初始化好管理员
 func NewAdminUserService() *AdminUser {
 	return new(AdminUser)
 }
+
 //登录验证
 func (c *AdminUser) Auth(account, password string) (*AdminSession, error) {
 	//登录验证
@@ -33,6 +36,7 @@ func (c *AdminUser) Auth(account, password string) (*AdminSession, error) {
 	}
 	return nil, err
 }
+
 //登录验证
 func (c *AdminUser) Login(account, password string) (admUser *model.Admin, err error) {
 	if len(account) == 0 {
@@ -58,6 +62,7 @@ func (c *AdminUser) Login(account, password string) (admUser *model.Admin, err e
 	fmt.Println("登陆 err", err)
 	return nil, fox.NewError("登陆失败，请稍后重试..")
 }
+
 //根据用户名查找
 func (c *AdminUser) GetAdminByUserName(account string) (*model.Admin, error) {
 	mod := model.NewAdmin()
@@ -73,6 +78,7 @@ func (c *AdminUser) GetAdminByUserName(account string) (*model.Admin, error) {
 	fmt.Println(err)
 	return nil, err
 }
+
 //根据ID查找
 func (c *AdminUser) GetAdminById(id int) (*model.Admin, error) {
 	if id <= 0 {
@@ -90,8 +96,9 @@ func (c *AdminUser) GetAdminById(id int) (*model.Admin, error) {
 	fmt.Println("获取 err", err)
 	return nil, fox.NewError("获取失败，请稍后重试..")
 }
+
 //密码更新
-func (c *AdminUser)UpdatePassword(pwd string, uid int) (bool, error) {
+func (c *AdminUser) UpdatePassword(pwd string, uid int) (bool, error) {
 	t := len(pwd)
 	if t < 1 {
 		return false, fox.NewError("密码不能为空")
@@ -128,8 +135,9 @@ func (c *AdminUser)UpdatePassword(pwd string, uid int) (bool, error) {
 	}
 	return false, fox.NewError("账号 不存在")
 }
+
 //列表
-func (c *AdminUser)GetAll(q map[string]interface{}, fields []string, orderBy string, page int, limit int) (*db.Paginator, error) {
+func (c *AdminUser) GetAll(q map[string]interface{}, fields []string, orderBy string, page int, limit int) (*db.Paginator, error) {
 	mode := model.NewAdmin()
 	data, err := mode.GetAll(q, fields, orderBy, page, 20)
 	if err != nil {
@@ -155,7 +163,7 @@ func (c *AdminUser)GetAll(q map[string]interface{}, fields []string, orderBy str
 		row.AdminStatus = &model.AdminStatus{}
 		for _, v := range stat {
 			//fmt.Println(v)
-			if (v.Aid == tmp.Aid) {
+			if v.Aid == tmp.Aid {
 				row.LoginTime = v.LoginTime
 				row.LoginIp = v.LoginIp
 				row.AdminStatus.Login = v.Login
@@ -171,8 +179,9 @@ func (c *AdminUser)GetAll(q map[string]interface{}, fields []string, orderBy str
 
 	return data, nil
 }
+
 //根据ID获取检测用户名是否存在
-func (c *AdminUser)CheckUserNameById(str string, id int) (bool, error) {
+func (c *AdminUser) CheckUserNameById(str string, id int) (bool, error) {
 	if str == "" {
 		return false, fox.NewError("名称 不能为空")
 	}
@@ -193,8 +202,9 @@ func (c *AdminUser)CheckUserNameById(str string, id int) (bool, error) {
 	}
 	return false, fox.NewError("已存在")
 }
+
 //详情
-func (c *AdminUser)Read(id int) (map[string]interface{}, error) {
+func (c *AdminUser) Read(id int) (map[string]interface{}, error) {
 	if id < 1 {
 		return nil, fox.NewError("ID 错误")
 	}
@@ -226,8 +236,9 @@ func (c *AdminUser)Read(id int) (map[string]interface{}, error) {
 	//fmt.Println(m)
 	return m, err
 }
+
 //创建
-func (c *AdminUser)Create(m *model.Admin, stat *model.AdminStatus) (int, error) {
+func (c *AdminUser) Create(m *model.Admin, stat *model.AdminStatus) (int, error) {
 	fmt.Println("DATA:", m)
 	if len(m.Username) < 1 {
 		return 0, fox.NewError("用户名 不能为空")
@@ -263,7 +274,6 @@ func (c *AdminUser)Create(m *model.Admin, stat *model.AdminStatus) (int, error) 
 		return 0, fox.NewError("创建错误1：" + err.Error())
 	}
 	stat.Aid = m.Aid
-	stat.Aid = stat.Aid
 	id2, err := o.Insert(stat)
 	if err != nil {
 		return 0, fox.NewError("创建错误2：" + err.Error())
@@ -274,8 +284,9 @@ func (c *AdminUser)Create(m *model.Admin, stat *model.AdminStatus) (int, error) 
 	fmt.Println("Statistics:", id2)
 	return m.Aid, nil
 }
+
 //更新
-func (c *AdminUser)Update(id int, m *model.Admin, stat *model.AdminStatus) (int, error) {
+func (c *AdminUser) Update(id int, m *model.Admin, stat *model.AdminStatus) (int, error) {
 	if id < 1 {
 		return 0, fox.NewError("ID 错误")
 	}
@@ -332,8 +343,9 @@ func (c *AdminUser)Update(id int, m *model.Admin, stat *model.AdminStatus) (int,
 	fmt.Println("Id:", id)
 	return id, nil
 }
+
 //删除
-func (c *AdminUser)Delete(id int) (bool, error) {
+func (c *AdminUser) Delete(id int) (bool, error) {
 	if id < 1 {
 		return false, fox.NewError("ID 错误")
 	}
