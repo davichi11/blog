@@ -5,11 +5,12 @@ import (
 	"github.com/astaxie/beego"
 	"html/template"
 )
+
 //模版编译
 //@sectionTpl 模版路径
 //@Data 模版替换内容
 func ExecuteTemplateHtml(sectionTpl string, Data map[interface{}]interface{}) string {
-	if sectionTpl ==""{
+	if sectionTpl == "" {
 		return ""
 	}
 	var buf bytes.Buffer

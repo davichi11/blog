@@ -4,10 +4,9 @@ import "fmt"
 
 //截取字符串 start 起点下标 end 终点下标(不包括)
 func Substr(str string, start int, end int) string {
-	rs := []rune(str)
-	length := len(rs)
-	if length<1{
-		return str;
+	length := len(str)
+	if length < 1 {
+		return str
 	}
 	if start < 0 || start > length {
 		fmt.Println("Substr error: start is wrong")
@@ -24,5 +23,5 @@ func Substr(str string, start int, end int) string {
 		end = length
 	}
 
-	return string(rs[start:end])
+	return string(str[start:end])
 }

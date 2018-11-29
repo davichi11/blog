@@ -4,10 +4,12 @@ import (
 	"math/rand"
 	"time"
 )
+
 // randseed
 func GetRand() *rand.Rand {
 	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
+
 // rand salt
 func RandSalt() string {
 	var salt = ""
@@ -17,6 +19,7 @@ func RandSalt() string {
 	}
 	return salt
 }
+
 const (
 	SALT = "$^*#,.><)(_+f*m"
 )

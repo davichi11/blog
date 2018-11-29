@@ -306,17 +306,17 @@ func (c *UploadFile) SaveDataBase(maps map[string]interface{}) {
 	fmt.Println("maps=>", maps)
 	//其他字段
 	if maps["type_id"] != nil {
-		typeId, _ := number.ObjToInt(maps["type_id"])
+		typeId := number.ObjToInt(maps["type_id"])
 		//fmt.Println("反射类型reflect.Type",reflect.TypeOf(maps["type_id"]))
 		att.TypeId = typeId
 	}
 	if maps["aid"] != nil {
-		aid, _ := number.ObjToInt(maps["aid"])
+		aid := number.ObjToInt(maps["aid"])
 		att.Aid = aid
 		//fmt.Println("att.TypeId",att.Aid)
 	}
 	if maps["id"] != nil {
-		id, _ := number.ObjToInt(maps["id"])
+		id := number.ObjToInt(maps["id"])
 		att.Id = id
 		//fmt.Println("att.Id",att.Id)
 	}

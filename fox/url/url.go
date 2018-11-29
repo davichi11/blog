@@ -8,8 +8,9 @@ import (
 type Url struct {
 	url.Values
 }
+
 //数值
-func (t Url)GetInt(key string, def ...int) (int) {
+func (t Url) GetInt(key string, def ...int) int {
 	if t.Values == nil {
 		if len(def) > 0 {
 			return def[0]
@@ -18,7 +19,7 @@ func (t Url)GetInt(key string, def ...int) (int) {
 		}
 	}
 
-	strv :=t.Get(key)
+	strv := t.Get(key)
 	if len(strv) == 0 && len(def) > 0 {
 		return def[0]
 	}

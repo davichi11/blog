@@ -1,17 +1,19 @@
 package url
 
 import (
+	"fmt"
 	"net/url"
 	"reflect"
-	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 	"time"
 )
+
 //来自beego
 func isStructPtr(t reflect.Type) bool {
 	return t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Struct
 }
+
 // ParseForm will parse form values to struct via tag.
 func ParseForm(form url.Values, obj interface{}) error {
 	objT := reflect.TypeOf(obj)
@@ -24,8 +26,10 @@ func ParseForm(form url.Values, obj interface{}) error {
 
 	return parseFormToStruct(form, objT, objV)
 }
+
 var sliceOfInts = reflect.TypeOf([]int(nil))
 var sliceOfStrings = reflect.TypeOf([]string(nil))
+
 // ParseForm will parse form values to struct via tag.
 // Support for anonymous struct.
 func parseFormToStruct(form url.Values, objT reflect.Type, objV reflect.Value) error {
@@ -55,7 +59,7 @@ func parseFormToStruct(form url.Values, objT reflect.Type, objV reflect.Value) e
 		}
 		value := form.Get(tag)
 		//value =strings.Trim(value," ")
-		value =strings.TrimSpace(value)
+		value = strings.TrimSpace(value)
 		if len(value) == 0 {
 			continue
 		}
@@ -103,7 +107,7 @@ func parseFormToStruct(form url.Values, objT reflect.Type, objV reflect.Value) e
 				//if len(tags) > 1 {
 				//	format = tags[1]
 				//}
-				if value !=""{
+				if value != "" {
 					local, _ := time.LoadLocation("Local")
 					t, err := time.ParseInLocation("2006-01-02 15:04:05", value, local)
 					if err != nil {
