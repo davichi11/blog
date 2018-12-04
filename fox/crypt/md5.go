@@ -8,7 +8,10 @@ import (
 
 func Md5(msg string) string {
 	h := md5.New()
-	io.WriteString(h, msg)
+	_, err := io.WriteString(h, msg)
+	if err != nil {
+		return ""
+	}
 	return fmt.Sprintf("%x", h.Sum(nil))
 	//srcData := []byte(msg)
 	//h.Write(srcData)

@@ -122,6 +122,7 @@ func (c *AdminUser) Post() {
 		c.Error(err.Error())
 		return
 	}
+
 	//更新人
 	modExt.AidUpdate = c.Session.Aid
 	//IP获取
