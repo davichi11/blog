@@ -46,10 +46,8 @@ func (c *BaseNoLogin) Initialization() {
 func (c *BaseNoLogin) GetDateTime(key string) (time.Time, bool) {
 	date := c.GetString(key)
 	if len(date) > 0 {
-		date, err := datetime.FormatTimeStructLocation(date, datetime.Y_M_D_H_I_S)
-		if err == nil {
-			return date, true
-		}
+		date := datetime.FormatTimeStructLocation(date, datetime.Y_M_D_H_I_S)
+		return date, true
 	}
 	return time.Time{}, false
 }

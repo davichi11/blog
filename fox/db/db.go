@@ -5,6 +5,7 @@ import (
 	"blog/fox/config"
 	"fmt"
 	"github.com/xormplus/xorm"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -18,24 +19,28 @@ type Db struct {
 
 //数据库
 var DB *Db
+
 //
 func dsn() string {
-	db_user := config.String("db_user")
-	db_pass := config.String("db_pass")
-	db_host := config.String("db_host")
-	db_port := config.String("db_port")
-	db_name := config.String("db_name")
-	dsn := db_user + ":" + db_pass + "@tcp(" + db_host + ":" + db_port + ")/" + db_name + "?charset=utf8&loc=Asia%2FShanghai"
+	dbUser := config.String("db_user")
+	dbPass := config.String("db_pass")
+	dbHost := config.String("db_host")
+	dbPort := config.String("db_port")
+	dbName := config.String("db_name")
+	dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&loc=Asia%2FShanghai"
+	fmt.Printf("dsn= %s", dsn)
 	return dsn
 }
 
 //初始化
 func Init() {
+	workPath, _ := os.Getwd()
+	fmt.Printf("work path =%s", workPath)
 	var err error
 	DB = new(Db)
 	DB.Db, err = xorm.NewEngine("mysql", dsn())
 	if err != nil {
-		fmt.Println("NewEngine", err)
+		fmt.Println("NewEngine", err.Error())
 		panic(err.Error())
 	}
 	DB.Db.ShowSQL(true)
@@ -102,7 +107,7 @@ func Filter(where map[string]interface{}) *xorm.Session {
 				FilterWhereAnd(db, i, k, "")
 			} else if QuestionMarkCount == 0 && !isEmpty {
 				//是数组
-				if (isMap) {
+				if isMap {
 
 					FilterWhereAnd(db, i, k, str)
 				} else {
@@ -118,14 +123,14 @@ func Filter(where map[string]interface{}) *xorm.Session {
 					fmt.Println("ArrToStr_key", k)
 					fmt.Println("ArrToStr", str)
 					if arrCount > 1 {
-						new_q := ""
+						newQ := ""
 						for z := 1; z <= arrCount; z++ {
 							if z > 1 {
-								new_q += ","
+								newQ += ","
 							}
-							new_q += "?"
+							newQ += "?"
 						}
-						str2 := strings.Replace(k, "?", new_q, -1)
+						str2 := strings.Replace(k, "?", newQ, -1)
 						fmt.Println("ArrToStr", str)
 						fmt.Println("arr", arr)
 						//var inter =arr
@@ -179,6 +184,7 @@ func FilterWhereAnd(db *xorm.Engine, i int, key string, value ...interface{}) {
 		Query.Session = Query.Session.And(key, value...)
 	}
 }
+
 func GetAll(model interface{}, data []interface{}, q map[string]interface{}, fields []string, orderBy string, page int, limit int) (*Paginator, error) {
 	session := Filter(q)
 	count, err := session.Count(model)

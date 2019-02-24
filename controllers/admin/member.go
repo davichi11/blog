@@ -1,12 +1,13 @@
 package admin
 
 import (
-	"strconv"
-	"fmt"
-	"blog/model"
 	"blog/fox/url"
+	"blog/model"
 	"blog/service/member"
+	"fmt"
+	"strconv"
 )
+
 //用户
 type Member struct {
 	Base
@@ -21,9 +22,10 @@ func (c *Member) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Detail", c.Detail)
 }
+
 //检测名称重复
 // @router /member/check_title [post]
-func (c *Member)CheckTitle() {
+func (c *Member) CheckTitle() {
 	//ID 获取 格式化
 	id, _ := c.GetInt("id")
 	name := c.GetString("wd")
@@ -37,9 +39,10 @@ func (c *Member)CheckTitle() {
 		c.Success("操作成功")
 	}
 }
+
 //列表
 // @router /member [get]
-func (c *Member)List() {
+func (c *Member) List() {
 	//查询
 	where := make(map[string]interface{})
 	mod := member.NewMemberService()
@@ -52,13 +55,14 @@ func (c *Member)List() {
 	c.Data["title"] = "用户-列表"
 	c.TplName = "admin/member/list.html"
 }
+
 //编辑
 // @router /member/:id [get]
-func (c *Member)Get() {
+func (c *Member) Get() {
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	ser := member.NewMemberService()
-	data, err := ser.Read(int_id)
+	data, err := ser.Read(intId)
 	//println("Detail :", err.Error())
 	if err != nil {
 		c.Error(err.Error())
@@ -71,9 +75,10 @@ func (c *Member)Get() {
 		c.TplName = "admin/member/get.html"
 	}
 }
+
 //添加
 // @router /member/add [get]
-func (c *Member)Add() {
+func (c *Member) Add() {
 	mod := member.NewMemberService()
 	mod.Member = &model.Member{}
 	mod.MemberStatus = &model.MemberStatus{}
@@ -82,9 +87,10 @@ func (c *Member)Add() {
 	c.Data["title"] = "用户-添加"
 	c.TplName = "admin/member/get.html"
 }
+
 //保存
 // @router /member [post]
-func (c *Member)Post() {
+func (c *Member) Post() {
 	mod := model.NewMember()
 	//参数传递
 	modExt := model.NewMemberStatus()
@@ -102,8 +108,8 @@ func (c *Member)Post() {
 	//modExt.AidUpdate = c.Session.Aid
 	//mod.Ip=c.Ctx.Input.IP()
 	//创建
-	serv := member.NewMemberService()
-	id, err := serv.Create(mod, modExt)
+	server := member.NewMemberService()
+	id, err := server.Create(mod, modExt)
 	if err != nil {
 		c.Error(err.Error())
 	} else {
@@ -111,19 +117,21 @@ func (c *Member)Post() {
 		c.Success("操作成功")
 	}
 }
+
 //查看
 // @router /member/detail/:id [get]
-func (c *Member)Detail() {
+func (c *Member) Detail() {
 	c.Get()
 	c.Data["title"] = "用户-查看"
 	c.TplName = "admin/member/detail.html"
 }
+
 //更新
 // @router /member/:id [put]
-func (c *Member)Put() {
+func (c *Member) Put() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//参数传递
 	mod := model.NewMember()
 	modExt := model.NewMemberStatus()
@@ -139,27 +147,26 @@ func (c *Member)Put() {
 	}
 	//更新
 	ser := member.NewMemberService()
-	_, err := ser.Update(int_id, mod, modExt)
+	_, err := ser.Update(intId, mod, modExt)
 	if err != nil {
 		c.Error(err.Error())
 	} else {
 		c.Success("操作成功")
 	}
 }
+
 //删除
 // @router /member/:id [delete]
-func (c *Member)Delete() {
+func (c *Member) Delete() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//更新
 	ser := member.NewMemberService()
-	_, err := ser.Delete(int_id)
+	_, err := ser.Delete(intId)
 	if err != nil {
 		c.Error(err.Error())
 	} else {
 		c.Success("操作成功")
 	}
 }
-
-

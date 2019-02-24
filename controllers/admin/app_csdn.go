@@ -1,8 +1,8 @@
 package admin
 
 import (
-	"fmt"
 	"blog/app/csdn"
+	"fmt"
 )
 
 type AppCsdn struct {
@@ -12,33 +12,35 @@ type AppCsdn struct {
 func (c *AppCsdn) URLMapping() {
 	c.Mapping("List", c.List)
 }
+
 //列表
 // @router /auth_csdn [get]
-func (c *AppCsdn)List() {
+func (c *AppCsdn) List() {
 
-	web:=csdn.NewAuthorizeWeb()
-	ok,err:=web.SetConfig()
-	if err !=nil{
+	web := csdn.NewAuthorizeWeb()
+	ok, err := web.SetConfig()
+	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("status:",ok);
+	fmt.Println("status:", ok)
 	web.SetRedirectUri("http://www.foxwho.com:8080/admin/auth_token")
 
 	c.Data["url"] = web.GetAuthorizeUrl()
 	c.TplName = "admin/auth/list.html"
 }
-// @router /auth_token [get]
-func (c *AppCsdn)GetToken() {
 
-	token:=c.GetString("code")
-	web:=csdn.NewAuthorizeWeb()
-	ok,err:=web.SetConfig()
-	if err !=nil{
+// @router /auth_token [get]
+func (c *AppCsdn) GetToken() {
+
+	token := c.GetString("code")
+	web := csdn.NewAuthorizeWeb()
+	ok, err := web.SetConfig()
+	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("status:",ok);
+	fmt.Println("status:", ok)
 	web.SetRedirectUri("http://www.foxwho.com:8080/admin/auth_token")
-	ACCESS,err1:=web.GetAccessToken(token)
+	ACCESS, err1 := web.GetAccessToken(token)
 	fmt.Println(ACCESS)
 	fmt.Println(err1)
 	c.Data["token"] = token

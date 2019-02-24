@@ -78,9 +78,9 @@ func (c *MemberGroup) Post() {
 // @router /member_group/:id [get]
 func (c *MemberGroup) Get() {
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	ser := admin.NewTypeService()
-	data, err := ser.Read(int_id)
+	data, err := ser.Read(intId)
 	//println("Detail :", err.Error())
 	if err != nil {
 		c.Error(err.Error())
@@ -100,7 +100,7 @@ func (c *MemberGroup) Get() {
 func (c *MemberGroup) Put() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//参数传递
 	mod := model.NewType()
 	if err := url.ParseForm(c.Input(), mod); err != nil {
@@ -110,7 +110,7 @@ func (c *MemberGroup) Put() {
 	mod.TypeId = conf.MEMBER_GROUP
 	//更新
 	ser := admin.NewTypeService()
-	_, err := ser.Update(int_id, mod)
+	_, err := ser.Update(intId, mod)
 	if err != nil {
 		c.Error(err.Error())
 	} else {
@@ -140,10 +140,10 @@ func (c *MemberGroup) CheckName() {
 func (c *MemberGroup) Delete() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//更新
 	ser := admin.NewTypeService()
-	_, err := ser.DeleteAndTypeId(int_id, conf.MEMBER_GROUP)
+	_, err := ser.DeleteAndTypeId(intId, conf.MEMBER_GROUP)
 	if err != nil {
 		c.Error(err.Error())
 	} else {

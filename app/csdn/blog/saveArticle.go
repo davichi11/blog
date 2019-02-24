@@ -14,8 +14,10 @@ import (
 
 //发表/修改文章
 type SaveArticle struct {
-	AccessToken string `json:"access_token" 是 OAuth授权后获得`
-	Ip          string `json:"ip" 否 用户ip`
+	//是 OAuth授权后获得
+	AccessToken string `json:"access_token"`
+	// 否 用户ip
+	Ip string `json:"ip"`
 	*entity.Article
 }
 
@@ -25,7 +27,7 @@ func NewSaveArticle() *SaveArticle {
 }
 
 //设置类型
-func (t *SaveArticle) SetType(str string) (error) {
+func (t *SaveArticle) SetType(str string) error {
 	if str == "original" || str == "report" || str == "translated" {
 		t.Type = str
 		return nil
@@ -34,7 +36,7 @@ func (t *SaveArticle) SetType(str string) (error) {
 }
 
 //检测
-func (t *SaveArticle) Check() (error) {
+func (t *SaveArticle) Check() error {
 	if len(t.AccessToken) < 1 {
 		return fox.NewError("access_token 不能为空")
 	}

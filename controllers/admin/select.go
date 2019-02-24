@@ -1,11 +1,12 @@
 package admin
 
 import (
-	"strconv"
+	"blog/model"
 	"blog/service/admin"
 	"fmt"
-	"blog/model"
+	"strconv"
 )
+
 //各种选择加载数据
 type Select struct {
 	Base
@@ -14,25 +15,26 @@ type Select struct {
 func (c *Select) URLMapping() {
 	c.Mapping("Type", c.Type)
 }
+
 //类别
 // @router /select/type [get]
 // @router /select/type/:id [get]
-func (c *Select)Type() {
+func (c *Select) Type() {
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
-	ser :=admin.NewTypeService()
-	data, err := ser.Query(int_id)
-	if err!=nil{
+	ser := admin.NewTypeService()
+	data, err := ser.Query(intId)
+	if err != nil {
 		fmt.Println(err.Error())
 		c.Error(err.Error())
 		return
 	}
 	mod := model.NewType()
 	c.Data["info"] = mod
-	if int_id > 0 {
+	if intId > 0 {
 		//获取该信息数据
-		data, err := ser.Read(int_id)
+		data, err := ser.Read(intId)
 		if err == nil {
 			c.Data["info"] = data["info"]
 		}

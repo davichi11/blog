@@ -66,11 +66,11 @@ func (c *AdminUser) List() {
 func (c *AdminUser) Get() {
 	//获取ID 并转换为数值型
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
 	ser := admin.NewAdminUserService()
 	//获取该信息
-	data, err := ser.Read(int_id)
+	data, err := ser.Read(intId)
 	//错误检测
 	if err != nil {
 		c.Error(err.Error())
@@ -155,7 +155,7 @@ func (c *AdminUser) Detail() {
 func (c *AdminUser) Put() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
 	mod := model.NewAdmin()
 	modExt := model.NewAdminStatus()
@@ -174,7 +174,7 @@ func (c *AdminUser) Put() {
 	//初始化
 	ser := admin.NewAdminUserService()
 	//更新数据
-	_, err := ser.Update(int_id, mod, modExt)
+	_, err := ser.Update(intId, mod, modExt)
 	//错误检测
 	if err != nil {
 		c.Error(err.Error())
@@ -188,11 +188,11 @@ func (c *AdminUser) Put() {
 func (c *AdminUser) Delete() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
 	ser := admin.NewAdminUserService()
 	//数据库删除
-	_, err := ser.Delete(int_id)
+	_, err := ser.Delete(intId)
 	if err != nil {
 		c.Error(err.Error())
 	} else {

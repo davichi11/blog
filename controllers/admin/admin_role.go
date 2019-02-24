@@ -96,11 +96,11 @@ func (c *AdminRole) Post() {
 func (c *AdminRole) Get() {
 	//获取ID 和字符串ID转为数值型
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
 	ser := admin.NewTypeService()
 	//获取该ID记录
-	data, err := ser.Read(int_id)
+	data, err := ser.Read(intId)
 	//错误检测和输出
 	if err != nil {
 		c.Error(err.Error())
@@ -122,7 +122,7 @@ func (c *AdminRole) Get() {
 func (c *AdminRole) Put() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
 	mod := model.NewType()
 	//参数传递，表单值 自动保存到结构体对应的属性中,根据 tag 中的form
@@ -135,7 +135,7 @@ func (c *AdminRole) Put() {
 	//初始化
 	ser := admin.NewTypeService()
 	//更新
-	_, err := ser.Update(int_id, mod)
+	_, err := ser.Update(intId, mod)
 	//错误检测
 	if err != nil {
 		c.Error(err.Error())
@@ -168,11 +168,11 @@ func (c *AdminRole) CheckName() {
 func (c *AdminRole) Delete() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//初始化
 	ser := admin.NewTypeService()
 	//删除该记录
-	_, err := ser.DeleteAndTypeId(int_id, conf.ADMIN_ROLE)
+	_, err := ser.DeleteAndTypeId(intId, conf.ADMIN_ROLE)
 	//错误检测
 	if err != nil {
 		c.Error(err.Error())

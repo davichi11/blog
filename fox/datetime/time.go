@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//go的格式化固定写法
 const (
 	Y_M                 = "2006-01"
 	Y_M_D               = "2006-01-02"
@@ -44,10 +45,8 @@ func (t DateTime) Format(layout string) string {
 
 //格式
 func Format(str interface{}, layout string) string {
-	date, err := FormatTimeStruct(str, layout)
-	if err != nil {
-		return ""
-	}
+	date := FormatTimeStruct(str, layout)
+
 	if date.IsZero() {
 		return ""
 	}
@@ -55,8 +54,8 @@ func Format(str interface{}, layout string) string {
 	return date.Format(layout)
 }
 
-//格式
-func FormatTimeStruct(str interface{}, layout string) (time.Time, error) {
+//转换泛型日期 错误返回当前日期
+func FormatTimeStruct(str interface{}, layout string) time.Time {
 	var date time.Time
 	var err error
 	//判断变量类型
@@ -67,15 +66,15 @@ func FormatTimeStruct(str interface{}, layout string) (time.Time, error) {
 		//如果是字符串则转换成 标准日期时间格式
 		date, err = time.Parse(layout, d)
 		if err != nil {
-			return time.Time{}, err
+			return time.Now()
 		}
 	}
 
-	return date, nil
+	return date
 }
 
-//格式
-func FormatTimeStructLocation(str interface{}, layout string) (time.Time, error) {
+//使用本地时区转换泛型日期 错误返回当前日期
+func FormatTimeStructLocation(str interface{}, layout string) time.Time {
 	var date time.Time
 	var err error
 	//判断变量类型
@@ -87,11 +86,11 @@ func FormatTimeStructLocation(str interface{}, layout string) (time.Time, error)
 		//如果是字符串则转换成 标准日期时间格式
 		date, err = time.ParseInLocation(layout, d, local)
 		if err != nil {
-			return time.Time{}, err
+			return time.Now()
 		}
 	}
 
-	return date, nil
+	return date
 }
 
 //当前日期时间

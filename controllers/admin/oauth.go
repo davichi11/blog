@@ -2,12 +2,13 @@ package admin
 
 import (
 	"blog/app/csdn"
-	"fmt"
 	"blog/fox/config"
-	"blog/service/oauth"
 	"blog/service/admin"
 	"blog/service/conf"
+	"blog/service/oauth"
+	"fmt"
 )
+
 //第三方账号登录
 type Oauth struct {
 	BaseNoLogin
@@ -18,9 +19,10 @@ func (c *Oauth) URLMapping() {
 	c.Mapping("Csdn", c.Csdn)
 	c.Mapping("Post", c.Post)
 }
+
 //绑定
 // @router /oauth [post]
-func (c *Oauth)Post() {
+func (c *Oauth) Post() {
 	//初始化
 	web := csdn.NewAuthorizeWeb()
 	//获取缓存及判断
@@ -60,8 +62,9 @@ func (c *Oauth)Post() {
 		c.Success("绑定成功")
 	}
 }
+
 // @router /oauth [get]
-func (c *Oauth)Get() {
+func (c *Oauth) Get() {
 	tp := c.GetString("type")
 	if len(tp) < 1 {
 		c.Error("类别错误")
@@ -76,7 +79,7 @@ func (c *Oauth)Get() {
 			c.Error("csdn oauth:" + err.Error())
 			return
 		}
-		fmt.Println("status:", ok);
+		fmt.Println("status:", ok)
 		//CSDN 回调URL 设置
 		web.SetRedirectUri(config.String("http") + "/admin/oauth_csdn")
 		//CSDN 接口URL
@@ -86,8 +89,9 @@ func (c *Oauth)Get() {
 		c.Error("类别不存在")
 	}
 }
+
 // @router /oauth_csdn [get]
-func (c *Oauth)Csdn() {
+func (c *Oauth) Csdn() {
 	token := c.GetString("code")
 	if len(token) < 1 {
 		c.Error("token 不存在")
@@ -98,7 +102,7 @@ func (c *Oauth)Csdn() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("status:", ok);
+	fmt.Println("status:", ok)
 	//回传URL
 	web.SetRedirectUri(config.String("http") + "/admin/oauth_csdn")
 	//获取TOKEN

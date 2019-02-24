@@ -298,17 +298,17 @@ func (c *AdminUser) Update(id int, m *model.Admin, stat *model.AdminStatus) (int
 	if len(m.Username) < 1 {
 		return 0, fox.NewError("用户名 不能为空")
 	}
+	pwLen := len(m.Password)
+	if pwLen < 1 {
+		return 0, fox.NewError("密码 不能为空")
+	}
+	if pwLen < 6 {
+		return 0, fox.NewError("密码 最小长度为 6 个字符")
+	}
+	if pwLen >= 32 {
+		return 0, fox.NewError("密码 不能超过32个字符")
+	}
 	if m.Password != "" {
-		t := len(m.Password)
-		if t < 1 {
-			return 0, fox.NewError("密码 不能为空")
-		}
-		if t < 6 {
-			return 0, fox.NewError("密码 最小长度为 6 个字符")
-		}
-		if t >= 32 {
-			return 0, fox.NewError("密码 不能超过32个字符")
-		}
 		//干扰码生成
 		m.Salt = str.RandSalt()
 		//加密后密码

@@ -1,15 +1,16 @@
 package admin
 
 import (
-	"strconv"
-	"blog/service/blog"
-	"fmt"
-	"blog/model"
-	"blog/fox/url"
 	"blog/fox/file"
+	"blog/fox/url"
+	"blog/model"
 	"blog/service/admin"
+	"blog/service/blog"
 	"blog/service/conf"
+	"fmt"
+	"strconv"
 )
+
 //博客控制器
 type Blog struct {
 	Base
@@ -24,9 +25,10 @@ func (c *Blog) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Detail", c.Detail)
 }
+
 //检测名称重复
 // @router /blog/check_title [post]
-func (c *Blog)CheckTitle() {
+func (c *Blog) CheckTitle() {
 	//ID 获取 格式化
 	int_id, _ := c.GetInt("cat_id")
 	id, _ := c.GetInt("id")
@@ -41,9 +43,10 @@ func (c *Blog)CheckTitle() {
 		c.Success("操作成功")
 	}
 }
+
 //列表
 // @router /blog [get]
-func (c *Blog)List() {
+func (c *Blog) List() {
 	//查询
 	where := make(map[string]interface{})
 	wd := c.GetString("wd")
@@ -64,9 +67,10 @@ func (c *Blog)List() {
 	c.Data["title"] = "博客-列表"
 	c.TplName = "admin/blog/list.html"
 }
+
 //编辑
 // @router /blog/:id [get]
-func (c *Blog)Get() {
+func (c *Blog) Get() {
 	id := c.Ctx.Input.Param(":id")
 	int_id, _ := strconv.Atoi(id)
 	//初始化获取信息
@@ -103,18 +107,19 @@ func (c *Blog)Get() {
 		c.TplName = "admin/blog/get.html"
 	}
 }
+
 //添加
 // @router /blog/add [get]
-func (c *Blog)Add() {
+func (c *Blog) Add() {
 	mod := blog.NewBlogService()
 	//初始化状态
 	blogMod := model.NewBlog()
 	blogMod.Author = c.Site.GetString("author")
-	blogMod.IsOpen = 1				//启用
-	blogMod.Status = 99				//发布
-	blogMod.IsRead = conf.READ_NOT	//未读
-	blogMod.TypeId = conf.ORIGINAL	//原创
-	blogMod.Type   = conf.TYPE_ARTICLE //文章
+	blogMod.IsOpen = 1               //启用
+	blogMod.Status = 99              //发布
+	blogMod.IsRead = conf.READ_NOT   //未读
+	blogMod.TypeId = conf.ORIGINAL   //原创
+	blogMod.Type = conf.TYPE_ARTICLE //文章
 	mod.Blog = blogMod
 	mod.BlogStatistics = &model.BlogStatistics{}
 	//模版参数设置
@@ -141,9 +146,10 @@ func (c *Blog)Add() {
 	c.Data["upload_token"] = cry
 	c.TplName = "admin/blog/get.html"
 }
+
 //保存
 // @router /blog [post]
-func (c *Blog)Post() {
+func (c *Blog) Post() {
 	blogModel := model.NewBlog()
 	//参数传递
 	blog_statistics := model.NewBlogStatistics()
@@ -179,17 +185,19 @@ func (c *Blog)Post() {
 		c.Success("操作成功")
 	}
 }
+
 //查看
 // @router /blog/detail/:id [get]
-func (c *Blog)Detail() {
+func (c *Blog) Detail() {
 	//直接使用编辑页数据
 	c.Get()
 	c.Data["title"] = "博客-查看"
 	c.TplName = "admin/blog/detail.html"
 }
+
 //更新
 // @router /blog/:id [put]
-func (c *Blog)Put() {
+func (c *Blog) Put() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
 	int_id, _ := strconv.Atoi(id)
@@ -199,13 +207,13 @@ func (c *Blog)Put() {
 	//表单 与结构体绑定
 	if err := url.ParseForm(c.Input(), blogMoel); err != nil {
 		fmt.Println("ParseForm-err:", err)
-		c.Error("表单绑定错误"+err.Error())
+		c.Error("表单绑定错误" + err.Error())
 		return
 	}
 	//表单与结构体绑定
 	if err := url.ParseForm(c.Input(), blog_statistics); err != nil {
 		fmt.Println("ParseForm-err:", err)
-		c.Error("表单绑定错误"+err.Error())
+		c.Error("表单绑定错误" + err.Error())
 		return
 	}
 	//时间判断
@@ -225,9 +233,10 @@ func (c *Blog)Put() {
 		c.Success("操作成功")
 	}
 }
+
 //删除
 // @router /blog/:id [delete]
-func (c *Blog)Delete() {
+func (c *Blog) Delete() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
 	int_id, _ := strconv.Atoi(id)
@@ -240,5 +249,3 @@ func (c *Blog)Delete() {
 		c.Success("操作成功")
 	}
 }
-
-

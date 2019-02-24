@@ -41,17 +41,17 @@ func (c *Type) List() {
 // @router /type/list_child/:id [get]
 func (c *Type) ListChild() {
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	ser := admin.NewTypeService()
-	data, err := ser.Query(int_id)
+	data, err := ser.Query(intId)
 	if err != nil {
 		c.Error(err.Error())
 		return
 	}
 	c.Data["info"] = ""
-	if int_id > 0 {
+	if intId > 0 {
 		ser := admin.NewTypeService()
-		data, err := ser.Read(int_id)
+		data, err := ser.Read(intId)
 		if err == nil {
 			c.Data["info"] = data["info"]
 		}
@@ -68,9 +68,9 @@ func (c *Type) ListChild() {
 // @router /type/add/:id [get]
 func (c *Type) Add() {
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	mod := model.NewType()
-	mod.TypeId = int_id
+	mod.TypeId = intId
 	mod.IsDefault = 0
 	mod.IsDel = 0
 	mod.IsSystem = 0
@@ -80,9 +80,9 @@ func (c *Type) Add() {
 	c.Data["type_id_name"] = "无"
 	c.Data["parent_id_name"] = "无"
 	c.Data["info"] = mod
-	if int_id > 0 {
+	if intId > 0 {
 		ser := admin.NewTypeService()
-		data, err := ser.Read(int_id)
+		data, err := ser.Read(intId)
 		if err == nil {
 			var t model.Type
 			t = data["info"].(model.Type)
@@ -128,9 +128,9 @@ func (c *Type) Post() {
 // @router /type/:id [get]
 func (c *Type) Get() {
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	ser := admin.NewTypeService()
-	data, err := ser.Read(int_id)
+	data, err := ser.Read(intId)
 	//println("Detail :", err.Error())
 	if err != nil {
 		c.Error(err.Error())
@@ -150,7 +150,7 @@ func (c *Type) Get() {
 func (c *Type) Put() {
 	//ID 获取 格式化
 	id := c.Ctx.Input.Param(":id")
-	int_id, _ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 	//参数传递
 	mod := model.NewType()
 	if err := url.ParseForm(c.Input(), mod); err != nil {
@@ -158,7 +158,7 @@ func (c *Type) Put() {
 	}
 	//更新
 	ser := admin.NewTypeService()
-	_, err := ser.Update(int_id, mod)
+	_, err := ser.Update(intId, mod)
 	if err != nil {
 		c.Error(err.Error())
 	} else {
@@ -170,12 +170,12 @@ func (c *Type) Put() {
 // @router /type/check_name [post]
 func (c *Type) CheckName() {
 	//ID 获取 格式化
-	int_id, _ := c.GetInt("type_id")
+	intId, _ := c.GetInt("type_id")
 	id, _ := c.GetInt("id")
 	name := c.GetString("name")
 	//创建
 	ser := admin.NewTypeService()
-	ok, err := ser.CheckNameTypeId(int_id, name, id)
+	ok, err := ser.CheckNameTypeId(intId, name, id)
 	if err != nil {
 		c.Error(err.Error())
 	} else {
