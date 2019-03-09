@@ -2,8 +2,8 @@ package db
 
 import (
 	"math"
-	"fmt"
 )
+
 //分页
 type Paginator struct {
 	Page        int   //当前页		`json:"page"`
@@ -13,16 +13,17 @@ type Paginator struct {
 	TotalCount  int   //总条数
 	FirstPage   int   //上一页
 	FirstPageIs bool
-	LastPageIs  bool  //
-	LastPage    int   //尾页
-	NextPageIs  bool  //
-	NextPage    int   //下一页
-	Data        []interface{}        `json:"data"`
+	LastPageIs  bool          //
+	LastPage    int           //尾页
+	NextPageIs  bool          //
+	NextPage    int           //下一页
+	Data        []interface{} `json:"data"`
 	OtherData   map[string]interface{}
 	Offset      int
 }
+
 // 分页  总数，当前页，每页条数
-func Pagination(count int, page int, pageSize int) (*Paginator) {
+func Pagination(count int, page int, pageSize int) *Paginator {
 	Page := new(Paginator)
 	Page.PageSize = pageSize
 	Page.TotalCount = count
@@ -43,34 +44,34 @@ func Pagination(count int, page int, pageSize int) (*Paginator) {
 	Page.NextPageIs = page != Page.TotalPage
 	if page == 1 {
 		Page.NextPageIs = false
-		if(Page.TotalPage>5){
+		if Page.TotalPage > 5 {
 			Page.LastPageIs = true
 		}
-	}else{
+	} else {
 		Page.LastPageIs = Page.NextPageIs
-		if(Page.TotalPage>5&&page != Page.TotalPage){
+		if Page.TotalPage > 5 && page != Page.TotalPage {
 			Page.LastPageIs = true
 		}
 	}
-	Page.LastPage=Page.TotalPage
+	Page.LastPage = Page.TotalPage
 	//读取起始条数
 	Page.Offset = (page - 1) * pageSize
-	fmt.Println("Page.TotalPage", Page.TotalPage)
+	//fmt.Println("Page.TotalPage", Page.TotalPage)
 	pages := make([]int, 5)
 	switch {
-	case page > Page.TotalPage - 5 && Page.TotalPage > 5: //最后5页
+	case page > Page.TotalPage-5 && Page.TotalPage > 5: //最后5页
 		Page.Pages = make([]int, 5)
 		start := Page.TotalPage - 5 + 1
 		Page.FirstPage = page - 1
-		Page.NextPage = int(math.Min(float64(Page.TotalPage), float64(page + 1)))
-		for i, _ := range pages {
+		Page.NextPage = int(math.Min(float64(Page.TotalPage), float64(page+1)))
+		for i := range pages {
 			Page.Pages[i] = start + i
 		}
 	case page >= 3 && Page.TotalPage > 5:
 		Page.Pages = make([]int, 5)
 		start := page - 3 + 1
 		Page.FirstPage = page - 3
-		for i, _ := range pages {
+		for i := range pages {
 			Page.Pages[i] = start + i
 		}
 		Page.FirstPage = page - 1
@@ -82,7 +83,7 @@ func Pagination(count int, page int, pageSize int) (*Paginator) {
 			for i := 0; i < num; i++ {
 				Page.Pages[i] = i + 1
 			}
-			Page.FirstPage = int(math.Max(float64(1), float64(page - 1)))
+			Page.FirstPage = int(math.Max(float64(1), float64(page-1)))
 			if page < Page.TotalPage {
 				Page.NextPage = page + 1
 			}

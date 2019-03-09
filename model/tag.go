@@ -13,11 +13,6 @@ type Tag struct {
 	TimeAdd time.Time `json:"time_add" xorm:"default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }
 
-//初始化
-func NewTag() *Tag {
-	return new(Tag)
-}
-
 //初始化列表
 func (c *Tag) newMakeDataArr() []Tag {
 	return make([]Tag, 0)
@@ -29,7 +24,7 @@ func (c *Tag) GetAll(q map[string]interface{}, fields []string, orderBy string, 
 	count, err := session.Count(c)
 	if err != nil {
 		fmt.Println(err)
-		return nil,fox.NewError( err.Error())
+		return nil, fox.NewError(err.Error())
 	}
 	Query := db.Pagination(int(count), page, limit)
 	if count == 0 {
@@ -48,7 +43,7 @@ func (c *Tag) GetAll(q map[string]interface{}, fields []string, orderBy string, 
 	err = session.Find(&data)
 	if err != nil {
 		fmt.Println(err)
-		return nil,fox.NewError( err.Error())
+		return nil, fox.NewError(err.Error())
 	}
 	Query.Data = make([]interface{}, len(data))
 	for y, x := range data {
@@ -59,7 +54,7 @@ func (c *Tag) GetAll(q map[string]interface{}, fields []string, orderBy string, 
 
 // 获取 单条记录
 func (c *Tag) GetById(id int) (*Tag, error) {
-	m := NewTag()
+	m := new(Tag)
 
 	m.TagId = id
 
@@ -73,7 +68,7 @@ func (c *Tag) GetById(id int) (*Tag, error) {
 
 // 删除 单条记录
 func (c *Tag) Delete(id int) (int64, error) {
-	m := NewTag()
+	m := new(Tag)
 
 	m.TagId = id
 

@@ -1,10 +1,10 @@
 package admin
 
 import (
-	"blog/fox/log"
 	"blog/model"
 	"blog/service/blog"
 	"blog/service/conf"
+	"github.com/alecthomas/log4go"
 	"strconv"
 )
 
@@ -87,10 +87,10 @@ func (c *BlogCat) Post() {
 	serv := blog.NewBlogCatService()
 	id, err := serv.Create(blogModel)
 	if err != nil {
-		log.Error("创建失败", err.Error())
+		_ = log4go.Error("创建失败%v", err.Error())
 		c.Error(err.Error())
 	} else {
-		log.Info("创建成功！:", id)
+		log4go.Info("创建成功！:%v", id)
 		c.Success("操作成功")
 	}
 }
@@ -117,7 +117,7 @@ func (c *BlogCat) Put() {
 	ser := blog.NewBlogCatService()
 	_, err := ser.Update(intId, blogModel)
 	if err != nil {
-		log.Error("更新失败", err.Error())
+		_ = log4go.Error("更新失败%v", err.Error())
 		c.Error(err.Error())
 	} else {
 		c.Success("操作成功")
@@ -134,7 +134,7 @@ func (c *BlogCat) Delete() {
 	ser := blog.NewBlogCatService()
 	_, err := ser.Delete(intId)
 	if err != nil {
-		log.Error("删除失败", err.Error())
+		_ = log4go.Error("删除失败%v", err.Error())
 		c.Error(err.Error())
 	} else {
 		c.Success("操作成功")

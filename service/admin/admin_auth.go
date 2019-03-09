@@ -1,8 +1,8 @@
 package admin
 
 import (
-	"blog/fox/log"
 	"blog/model"
+	"github.com/alecthomas/log4go"
 	"strconv"
 	"strings"
 )
@@ -21,13 +21,13 @@ func (c *AdminAuth) Validate(account string) *AdminSession {
 	var admin *AdminUser
 	admUser, err := admin.GetAdminByUserName(account)
 	if err != nil || admUser.Aid < 0 {
-		log.Debug("Auth 验证错误：", err.Error())
+		log4go.Debug("Auth 验证错误：%v", err.Error())
 		return nil
 	}
 	//赋值
 	session := NewAdminSessionService()
 	Session := session.Convert(admUser)
-	log.Debug("Auth 验证通过：", Session)
+	log4go.Debug("Auth 验证通过：%v", Session)
 	return Session
 }
 
@@ -45,14 +45,14 @@ func (c *AdminAuth) ValidateToken(token, currentIp string) *model.Admin {
 	Dtoken := "sdfs|sdfa|asdfa"
 	array := strings.Split(Dtoken, "|")
 	if len(array) != 3 {
-		log.Debug("token 校验失败")
+		log4go.Debug("token 校验失败")
 		return nil
 	}
 	uid := array[0]
 	ip := array[2]
 	//IP发生变化 强制重新登录
 	if !strings.EqualFold(ip, currentIp) {
-		log.Debug("IP发生变化 强制重新登录")
+		log4go.Debug("IP发生变化 强制重新登录")
 		return nil
 	}
 	intId, _ := strconv.Atoi(uid)
@@ -60,7 +60,7 @@ func (c *AdminAuth) ValidateToken(token, currentIp string) *model.Admin {
 	var admin *AdminUser
 	admUser, err := admin.GetAdminById(intId)
 	if err != nil || admUser.Aid < 0 {
-		log.Debug("Auth 验证错误：", err.Error())
+		log4go.Debug("Auth 验证错误：", err.Error())
 		return nil
 	}
 	return admUser

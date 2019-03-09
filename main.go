@@ -6,7 +6,6 @@ import (
 	_ "blog/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"strconv"
 )
 
 func main() {
@@ -16,9 +15,8 @@ func main() {
 	beego.Run()
 }
 
-
-
 func addRouters() {
+	//log4go.LoadConfiguration("log4go.xml")
 	beego.ErrorController(&controllers.Error{})
 	beego.SetStaticPath("/uploads", "uploads")
 	//beego.Router("/admin/login", &admin.LoginController{})
@@ -75,16 +73,16 @@ func addRouters() {
 	beego.Router("/api/blog/tag", &controllers.BlogTag{}, "get:GetAll")
 }
 
-func array(m map[string]interface{}, s int) []string {
-	if m != nil {
-		a := m["tag_"+strconv.Itoa(s)]
-		if a != nil {
-			b := a.([]string)
-			if len(b) > 0 {
-				return b
-			}
-		}
-	}
-
-	return []string{}
-}
+//func array(m map[string]interface{}, s int) []string {
+//	if m != nil {
+//		a := m["tag_"+strconv.Itoa(s)]
+//		if a != nil {
+//			b := a.([]string)
+//			if len(b) > 0 {
+//				return b
+//			}
+//		}
+//	}
+//
+//	return []string{}
+//}

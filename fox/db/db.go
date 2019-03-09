@@ -44,8 +44,8 @@ func Init() {
 		panic(err.Error())
 	}
 	DB.Db.ShowSQL(true)
-	locat, _ := time.LoadLocation("Asia/Shanghai")
-	DB.Db.TZLocation = locat
+	location, _ := time.LoadLocation("Asia/Shanghai")
+	DB.Db.TZLocation = location
 }
 
 // NewDb create new db

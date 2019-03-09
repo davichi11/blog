@@ -4,8 +4,8 @@ import (
 	"blog/fox"
 	"blog/fox/datetime"
 	"blog/fox/db"
-	"blog/fox/log"
 	"blog/service/admin"
+	"github.com/alecthomas/log4go"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 )
@@ -100,5 +100,5 @@ func (c *BaseNoLogin) SuccessJson(key string, def ...map[string]interface{}) {
 func init() {
 	//初始化
 	db.Init()
-	log.Info("init start...")
+	log4go.Info("init start...")
 }
